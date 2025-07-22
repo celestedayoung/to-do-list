@@ -71,7 +71,7 @@ function TodoList(container, todos, updateTodoCallback, deleteTodoCallback) {
               data-index="${index}"
               onclick="window.todoListInstance.deleteTodo(${index})"
             >
-              삭제
+              X
             </button>
           `
           }
