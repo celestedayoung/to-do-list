@@ -14,11 +14,6 @@ function TodoCounter(container, todos) {
     const progressPercentage =
       totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
 
-    const barLength = 10;
-    const filledBars = Math.round((progressPercentage / 100) * barLength);
-    const emptyBars = barLength - filledBars;
-    const progressBar = "■".repeat(filledBars) + "□".repeat(emptyBars);
-
     this.container.innerHTML = `
       <div class="todo-counter">
         <div class="counter-info">
@@ -26,8 +21,11 @@ function TodoCounter(container, todos) {
           <span class="total-count">전체: ${totalCount}</span>
           <span class="remaining-count">남은 일: ${remainingCount}</span>
         </div>
-        <div class="progress-text">
-          진행률: ${progressBar} ${progressPercentage}%
+        <div class="progress-container">
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: ${progressPercentage}%"></div>
+          </div>
+          <span class="progress-percentage">${progressPercentage}%</span>
         </div>
       </div>
     `;
