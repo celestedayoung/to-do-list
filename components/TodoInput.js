@@ -29,7 +29,6 @@ function TodoInput(container, addTodoCallback) {
   this.bindEvents = () => {
     this.buttonElement.addEventListener("click", this.handleAddTodo);
 
-    // 엔터키 이벤트
     this.inputElement.addEventListener("keypress", (e) => {
       if (e.key === "Enter") {
         this.handleAddTodo();
