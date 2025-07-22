@@ -57,7 +57,8 @@ function TodoList(container, todos, updateTodoCallback, deleteTodoCallback) {
   };
 
   this.deleteTodo = (index) => {
-    if (confirm("정말로 이 할 일을 삭제하시겠습니까?")) {
+    const todoToDelete = this.todos[index];
+    if (confirm(`'${todoToDelete.name}'을(를) 삭제하시겠습니까?`)) {
       this.deleteTodoCallback(index);
     }
   };

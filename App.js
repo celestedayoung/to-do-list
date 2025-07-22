@@ -1,6 +1,6 @@
 import TodoList from "./components/TodoList.js";
 import TodoInput from "./components/TodoInput.js";
-import { model } from "./model/model.js";
+import { StorageUtil } from "./utils/storage.js";
 
 function App() {
   this.data = [];
@@ -9,12 +9,13 @@ function App() {
   this.$todoList = document.querySelector("#todo-list");
 
   this.init = () => {
-    this.data = [...model];
+    this.data = StorageUtil.getTodos();
     this.render();
   };
 
   this.setState = (newData) => {
     this.data = newData;
+    StorageUtil.saveTodos(this.data);
     this.todoList.update(this.data);
   };
 
