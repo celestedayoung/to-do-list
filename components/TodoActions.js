@@ -1,5 +1,17 @@
 import { DateUtils } from "../utils/dateUtils.js";
 
+/**
+ * 날짜 네비게이션과 할일 관리 액션 버튼들을 제공하는 컴포넌트
+ * @param {HTMLElement} container - 컴포넌트가 렌더링될 DOM 요소
+ * @param {Array} todos - 할일 목록
+ * @param {Function} completeAllCallback - 모든 할일을 완료할 때 호출되는 콜백
+ * @param {Function} deleteAllCallback - 모든 할일을 삭제할 때 호출되는 콜백
+ * @param {string|null} currentDateFilter - 현재 적용된 날짜 필터
+ * @param {Function} goToPreviousDate - 이전 날짜로 이동하는 콜백
+ * @param {Function} goToNextDate - 다음 날짜로 이동하는 콜백
+ * @param {Function} goToToday - 오늘로 이동하는 콜백
+ * @param {Function} showAllTodos - 전체 할일을 보여주는 콜백
+ */
 function TodoActions(
   container,
   todos,
@@ -21,11 +33,17 @@ function TodoActions(
   this.goToToday = goToToday;
   this.showAllTodos = showAllTodos;
 
+  /**
+   * 컴포넌트를 초기화하고 렌더링
+   */
   this.init = () => {
     this.render();
     this.bindEvents();
   };
 
+  /**
+   * 날짜 네비게이션과 액션 버튼들을 렌더링
+   */
   this.render = () => {
     const hasAnyTodos = this.todos.length > 0;
     const hasIncompleteTodos = this.todos.some((todo) => !todo.isCompleted);
@@ -39,10 +57,6 @@ function TodoActions(
           <button class="nav-button prev-button" id="prev-date">‹</button>
           <span class="current-date-display" id="current-date">${currentDisplayText}</span>
           <button class="nav-button next-button" id="next-date">›</button>
-        </div>
-        <div class="date-actions">
-          <button class="date-action-button" id="today-button">오늘</button>
-          <button class="date-action-button" id="all-button">전체</button>
         </div>
       </div>
       <div class="todo-actions-section">
@@ -64,6 +78,9 @@ function TodoActions(
     `;
   };
 
+  /**
+   * 모든 버튼에 이벤트 리스너를 바인딩
+   */
   this.bindEvents = () => {
     const completeAllButton = this.container.querySelector(
       ".complete-all-button"
@@ -82,6 +99,9 @@ function TodoActions(
     allButton.addEventListener("click", this.showAllTodos);
   };
 
+  /**
+   * 모든 할일을 완료 처리하는 핸들러
+   */
   this.handleCompleteAll = () => {
     const hasIncompleteTodos = this.todos.some((todo) => !todo.isCompleted);
 
@@ -94,6 +114,9 @@ function TodoActions(
     }
   };
 
+  /**
+   * 모든 할일을 삭제하는 핸들러
+   */
   this.handleDeleteAll = () => {
     if (this.todos.length === 0) {
       return;
@@ -104,6 +127,11 @@ function TodoActions(
     }
   };
 
+  /**
+   * 새로운 데이터로 컴포넌트를 업데이트
+   * @param {Array} newTodos - 새로운 할일 목록
+   * @param {string|null} currentDateFilter - 새로운 날짜 필터
+   */
   this.update = (newTodos, currentDateFilter) => {
     this.todos = newTodos;
     this.currentDateFilter = currentDateFilter;
