@@ -1,5 +1,13 @@
 import { DateUtils } from "../utils/dateUtils.js";
 
+/**
+ * 할일 목록을 표시하고 편집 기능을 제공하는 컴포넌트
+ * @param {HTMLElement} container - 컴포넌트가 렌더링될 DOM 요소
+ * @param {Array} todos - 표시할 할일 목록 (필터링된 데이터)
+ * @param {Function} updateTodoCallback - 할일을 업데이트할 때 호출되는 콜백
+ * @param {Function} deleteTodoCallback - 할일을 삭제할 때 호출되는 콜백
+ * @param {Array} allTodos - 원본 전체 할일 데이터
+ */
 function TodoList(
   container,
   todos,
@@ -9,15 +17,21 @@ function TodoList(
 ) {
   this.container = container;
   this.todos = todos;
-  this.allTodos = allTodos; // 원본 전체 데이터
+  this.allTodos = allTodos;
   this.updateTodoCallback = updateTodoCallback;
   this.deleteTodoCallback = deleteTodoCallback;
   this.editingIndex = null;
 
+  /**
+   * 컴포넌트를 초기화하고 렌더링
+   */
   this.init = () => {
     this.render();
   };
 
+  /**
+   * 할일 목록을 렌더링 (빈 상태 포함)
+   */
   this.render = () => {
     if (this.todos.length === 0) {
       this.container.innerHTML = `
@@ -31,7 +45,6 @@ function TodoList(
 
     const todoListHTML = this.todos
       .map((todo, displayIndex) => {
-        // 원본 데이터에서 실제 인덱스 찾기
         const originalIndex = this.allTodos.findIndex(
           (originalTodo) =>
             originalTodo.name === todo.name &&
@@ -120,6 +133,10 @@ function TodoList(
     }
   };
 
+  /**
+   * 할일의 완료 상태를 토글
+   * @param {number} index - 토글할 할일의 인덱스
+   */
   this.toggleComplete = (index) => {
     this.updateTodoCallback(index, {
       ...this.allTodos[index],
@@ -127,6 +144,10 @@ function TodoList(
     });
   };
 
+  /**
+   * 할일 제목 클릭 시 편집 모드로 전환
+   * @param {number} index - 편집할 할일의 인덱스
+   */
   this.handleTitleClick = (index) => {
     const todo = this.allTodos[index];
     if (todo.isCompleted) {
@@ -137,6 +158,12 @@ function TodoList(
     this.render();
   };
 
+  /**
+   * 편집 모드에서 키보드 입력 처리
+   * @param {KeyboardEvent} event - 키보드 이벤트
+   * @param {number} index - 편집 중인 할일의 인덱스
+   * @param {string} value - 현재 입력값
+   */
   this.handleEditKeypress = (event, index, value) => {
     if (event.key === "Enter") {
       this.saveEdit(index, value);
@@ -145,6 +172,11 @@ function TodoList(
     }
   };
 
+  /**
+   * 편집된 할일을 저장
+   * @param {number} index - 저장할 할일의 인덱스
+   * @param {string} newValue - 새로운 할일 내용
+   */
   this.saveEdit = (index, newValue) => {
     if (newValue === undefined) {
       const editInput = this.container.querySelector(".todo-edit-input");
@@ -169,11 +201,18 @@ function TodoList(
     this.render();
   };
 
+  /**
+   * 편집 모드를 취소
+   */
   this.cancelEdit = () => {
     this.editingIndex = null;
     this.render();
   };
 
+  /**
+   * 할일을 삭제
+   * @param {number} index - 삭제할 할일의 인덱스
+   */
   this.deleteTodo = (index) => {
     const todoToDelete = this.allTodos[index];
     if (confirm(`'${todoToDelete.name}'을(를) 삭제하시겠습니까?`)) {
@@ -181,6 +220,11 @@ function TodoList(
     }
   };
 
+  /**
+   * 새로운 데이터로 컴포넌트를 업데이트
+   * @param {Array} newTodos - 새로운 할일 목록 (필터링된 데이터)
+   * @param {Array} allTodos - 새로운 전체 할일 데이터
+   */
   this.update = (newTodos, allTodos = []) => {
     this.todos = newTodos;
     this.allTodos = allTodos.length > 0 ? allTodos : newTodos;

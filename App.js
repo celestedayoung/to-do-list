@@ -5,22 +5,32 @@ import TodoActions from "./components/TodoActions.js";
 import { StorageUtil } from "./utils/storage.js";
 import { DateUtils } from "./utils/dateUtils.js";
 
+/**
+ * 할일 애플리케이션의 메인 컴포넌트
+ */
 function App() {
   this.data = [];
   this.filteredData = [];
-  this.currentDateFilter = DateUtils.getTodayString(); // 기본값을 오늘로 설정
+  this.currentDateFilter = DateUtils.getTodayString();
   this.todoList = null;
   this.todoInput = null;
   this.todoCounter = null;
   this.todoActions = null;
   this.$todoList = document.querySelector("#todo-list");
 
+  /**
+   * 애플리케이션을 초기화하고 렌더링
+   */
   this.init = () => {
     this.data = StorageUtil.getTodos();
     this.updateFilteredData();
     this.render();
   };
 
+  /**
+   * 새로운 데이터로 상태를 업데이트하고 모든 컴포넌트를 갱신
+   * @param {Array} newData - 새로운 할일 데이터
+   */
   this.setState = (newData) => {
     this.data = newData;
     this.updateFilteredData();
@@ -28,7 +38,6 @@ function App() {
     this.todoList.update(this.filteredData, this.data);
     this.todoCounter.update(this.filteredData, this.currentDateFilter);
 
-    // 분리된 컴포넌트들 업데이트
     const dateNavigationContainer = document.querySelector("#date-navigation");
     const todoActionsContainer = document.querySelector("#todo-actions");
     if (dateNavigationContainer)
@@ -36,12 +45,13 @@ function App() {
     if (todoActionsContainer) this.renderTodoActions(todoActionsContainer);
   };
 
+  /**
+   * 현재 날짜 필터에 따라 표시할 데이터를 업데이트
+   */
   this.updateFilteredData = () => {
     if (this.currentDateFilter === null) {
-      // 전체 보기일 때는 최신순으로 정렬
       this.filteredData = DateUtils.sortTodosByDateDesc([...this.data]);
     } else {
-      // 특정 날짜 필터일 때는 해당 날짜만 필터링
       this.filteredData = DateUtils.filterTodosByDate(
         this.data,
         this.currentDateFilter
@@ -49,48 +59,70 @@ function App() {
     }
   };
 
+  /**
+   * 날짜 필터를 설정하고 관련 컴포넌트들을 업데이트
+   * @param {string|null} dateFilter - 설정할 날짜 필터 (null이면 전체)
+   */
   this.setDateFilter = (dateFilter) => {
     this.currentDateFilter = dateFilter;
     this.updateFilteredData();
     this.todoList.update(this.filteredData, this.data);
     this.todoCounter.update(this.filteredData, this.currentDateFilter);
 
-    // 날짜 네비게이션 업데이트
     const dateNavigationContainer = document.querySelector("#date-navigation");
     if (dateNavigationContainer)
       this.renderDateNavigation(dateNavigationContainer);
 
-    // 액션 버튼들도 업데이트하여 활성화 상태 반영
     const todoActionsContainer = document.querySelector("#todo-actions");
     if (todoActionsContainer) this.renderTodoActions(todoActionsContainer);
   };
 
-  // 날짜 네비게이션 메서드들
+  /**
+   * 이전 날짜로 이동
+   */
   this.goToPreviousDate = () => {
     const currentDate = this.currentDateFilter || DateUtils.getTodayString();
     const previousDate = DateUtils.getPreviousDate(currentDate);
     this.setDateFilter(previousDate);
   };
 
+  /**
+   * 다음 날짜로 이동
+   */
   this.goToNextDate = () => {
     const currentDate = this.currentDateFilter || DateUtils.getTodayString();
     const nextDate = DateUtils.getNextDate(currentDate);
     this.setDateFilter(nextDate);
   };
 
+  /**
+   * 오늘 날짜로 이동
+   */
   this.goToToday = () => {
     this.setDateFilter(DateUtils.getTodayString());
   };
 
+  /**
+   * 전체 할일 보기로 전환
+   */
   this.showAllTodos = () => {
     this.setDateFilter(null);
   };
 
+  /**
+   * 새로운 할일을 추가
+   * @param {Object} newTodo - 추가할 할일 객체
+   */
   this.addTodo = (newTodo) => {
     const updatedData = [...this.data, newTodo];
     this.setState(updatedData);
   };
 
+  /**
+   * 기존 할일을 업데이트
+   * @param {number} index - 업데이트할 할일의 인덱스
+   * @param {Object} updatedTodo - 업데이트된 할일 객체
+   */
   this.updateTodo = (index, updatedTodo) => {
     const updatedData = this.data.map((todo, i) =>
       i === index ? updatedTodo : todo
@@ -98,11 +130,18 @@ function App() {
     this.setState(updatedData);
   };
 
+  /**
+   * 할일을 삭제
+   * @param {number} index - 삭제할 할일의 인덱스
+   */
   this.deleteTodo = (index) => {
     const updatedData = this.data.filter((_, i) => i !== index);
     this.setState(updatedData);
   };
 
+  /**
+   * 모든 할일을 완료 상태로 변경
+   */
   this.completeAllTodos = () => {
     const updatedData = this.data.map((todo) => ({
       ...todo,
@@ -111,10 +150,16 @@ function App() {
     this.setState(updatedData);
   };
 
+  /**
+   * 모든 할일을 삭제
+   */
   this.deleteAllTodos = () => {
     this.setState([]);
   };
 
+  /**
+   * 메인 애플리케이션 UI를 렌더링
+   */
   this.render = () => {
     const today = new Date();
     const dateString = today.toLocaleDateString("ko-KR", {
@@ -127,8 +172,9 @@ function App() {
     this.$todoList.innerHTML = `
       <div class="app-container">
         <h1>Todo List</h1>
-        <div id="date-navigation"></div>
+        <div class="date-display">${dateString}</div>
         <div id="todo-input"></div>
+        <div id="date-navigation"></div>
         <div id="todo-counter"></div>
         <div id="todo-actions"></div>
         <div id="todo-list-content"></div>
@@ -162,6 +208,10 @@ function App() {
     );
   };
 
+  /**
+   * 날짜 네비게이션 UI를 렌더링
+   * @param {HTMLElement} container - 렌더링할 컨테이너 요소
+   */
   this.renderDateNavigation = (container) => {
     const currentDisplayText = DateUtils.getFilterDisplayText(
       this.currentDateFilter
@@ -184,11 +234,14 @@ function App() {
     nextButton.addEventListener("click", this.goToNextDate);
   };
 
+  /**
+   * 할일 관리 액션 버튼들을 렌더링
+   * @param {HTMLElement} container - 렌더링할 컨테이너 요소
+   */
   this.renderTodoActions = (container) => {
     const hasAnyTodos = this.data.length > 0;
     const hasIncompleteTodos = this.data.some((todo) => !todo.isCompleted);
 
-    // 현재 필터 상태 확인
     const isToday = this.currentDateFilter === DateUtils.getTodayString();
     const isAll = this.currentDateFilter === null;
 
