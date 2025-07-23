@@ -1,10 +1,17 @@
 export const model = [
   {
-    name: '리액트 복습',
+    name: "React 복습",
     isCompleted: true,
+    createdDate: "2025-07-22",
   },
   {
-    name: '타입스크립트 공부',
+    name: "Typescript 공부",
     isCompleted: false,
+    createdDate: "2025-07-22",
   },
-]
+  {
+    name: "Next.js 공부",
+    isCompleted: true,
+    createdDate: "2025-07-21",
+  },
+];
