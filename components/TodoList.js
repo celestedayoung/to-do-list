@@ -26,13 +26,6 @@ function TodoList(container, todos, updateTodoCallback, deleteTodoCallback) {
 
         return `
         <div class="todo-item ${todo.isCompleted ? "completed" : ""}">
-          <input 
-            type="checkbox" 
-            class="todo-checkbox"
-            data-index="${index}"
-            ${todo.isCompleted ? "checked" : ""}
-            onchange="window.todoListInstance.toggleComplete(${index})"
-          />
           ${
             isEditing
               ? `
@@ -59,6 +52,13 @@ function TodoList(container, todos, updateTodoCallback, deleteTodoCallback) {
             </div>
           `
               : `
+            <input 
+              type="checkbox" 
+              class="todo-checkbox"
+              data-index="${index}"
+              ${todo.isCompleted ? "checked" : ""}
+              onchange="window.todoListInstance.toggleComplete(${index})"
+            />
             <span 
               class="todo-title ${todo.isCompleted ? "completed-text" : ""}" 
               data-index="${index}"
@@ -80,7 +80,11 @@ function TodoList(container, todos, updateTodoCallback, deleteTodoCallback) {
       })
       .join("");
 
-    this.container.innerHTML = todoListHTML;
+    this.container.innerHTML = `
+      <div class="todo-list-container">
+        ${todoListHTML}
+      </div>
+    `;
 
     if (this.editingIndex !== null) {
       const editInput = this.container.querySelector(".todo-edit-input");
