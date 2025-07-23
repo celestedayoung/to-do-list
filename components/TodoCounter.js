@@ -1,6 +1,9 @@
-function TodoCounter(container, todos) {
+import { DateUtils } from "../utils/dateUtils.js";
+
+function TodoCounter(container, todos, currentDateFilter = null) {
   this.container = container;
   this.todos = todos;
+  this.currentDateFilter = currentDateFilter;
 
   this.init = () => {
     this.render();
@@ -9,7 +12,6 @@ function TodoCounter(container, todos) {
   this.render = () => {
     const totalCount = this.todos.length;
     const completedCount = this.todos.filter((todo) => todo.isCompleted).length;
-    const remainingCount = totalCount - completedCount;
 
     const progressPercentage =
       totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
@@ -17,9 +19,7 @@ function TodoCounter(container, todos) {
     this.container.innerHTML = `
       <div class="todo-counter">
         <div class="counter-info">
-          <span class="completed-count">완료: ${completedCount}</span>
-          <span class="total-count">전체: ${totalCount}</span>
-          <span class="remaining-count">남은 일: ${remainingCount}</span>
+          <span class="count-display">${completedCount}/${totalCount}</span>
         </div>
         <div class="progress-container">
           <div class="progress-bar">
@@ -31,8 +31,9 @@ function TodoCounter(container, todos) {
     `;
   };
 
-  this.update = (newTodos) => {
+  this.update = (newTodos, currentDateFilter = null) => {
     this.todos = newTodos;
+    this.currentDateFilter = currentDateFilter;
     this.render();
   };
 

@@ -27,6 +27,7 @@
   --danger-hover: #fb2c36;
 
   /* 폰트 크기 */
+  --font-size-title: 2rem;
   --font-size-large: 1.5rem;
   --font-size-medium: 1rem;
   --font-size-small: 0.875rem;
@@ -77,13 +78,25 @@ body {
 
 /* 헤더 */
 h1 {
-  padding: var(--spacing-xl) var(--spacing-lg) var(--spacing-md);
+  padding: var(--spacing-xl) var(--spacing-lg) var(--spacing-lg);
   text-align: center;
-  color: var(--text-primary);
-  font-size: var(--font-size-large);
-  font-weight: 500;
+  color: var(--primary-color);
+  font-size: var(--font-size-title);
+  font-weight: 600;
   background: var(--bg-primary);
   flex-shrink: 0;
+  margin-bottom: 0;
+}
+
+/* 날짜 표시 */
+.date-display {
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: var(--font-size-small);
+  padding: 0 var(--spacing-lg) var(--spacing-xs);
+  background: var(--bg-primary);
+  flex-shrink: 0;
+  font-weight: 400;
 }
 
 /* TodoInput 스타일 */
@@ -149,29 +162,18 @@ h1 {
   padding: var(--spacing-lg);
   background: var(--bg-primary);
   flex-shrink: 0;
-  border-bottom: 1px solid var(--border-light);
+  margin-bottom: var(--spacing-md);
 }
 
 .counter-info {
   display: flex;
-  justify-content: space-between;
-  margin-bottom: var(--spacing-md);
-  font-size: var(--font-size-small);
+  justify-content: flex-start;
+}
+
+.count-display {
   color: var(--text-secondary);
-}
-
-.completed-count {
-  color: var(--primary-color);
-  font-weight: 600;
-}
-
-.total-count {
-  font-weight: 500;
-}
-
-.remaining-count {
-  color: var(--danger-color);
-  font-weight: 500;
+  font-weight: 400;
+  font-size: var(--font-size-small);
 }
 
 /* 진행률 컨테이너 */
@@ -228,50 +230,154 @@ h1 {
 }
 
 .progress-percentage {
-  font-size: var(--font-size-small);
+  font-size: var(--font-size-medium);
   font-weight: 600;
   color: var(--text-primary);
   min-width: 35px;
   text-align: right;
 }
 
-/* TodoActions 스타일 */
-.todo-actions {
-  padding: var(--spacing-lg);
-  display: flex;
-  gap: var(--spacing-sm);
+/* 날짜 네비게이션 섹션 */
+.date-navigation-section {
+  padding: var(--spacing-sm) var(--spacing-sm);
   background: var(--bg-primary);
   flex-shrink: 0;
 }
 
+.filter-title {
+  font-size: var(--font-size-small);
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-md);
+  font-weight: 500;
+  text-align: center;
+}
+
+/* 날짜 네비게이션 */
+.date-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+}
+
+.nav-button {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: var(--text-secondary);
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.nav-button:hover {
+  color: var(--primary-color);
+  transform: scale(1.1);
+}
+
+.current-date-display {
+  padding: var(--spacing-sm) var(--spacing-sm);
+  font-size: var(--font-size-medium);
+  font-size: large;
+  color: var(--text-primary);
+  border: none;
+  background: transparent;
+  font-weight: 600;
+  min-width: 120px;
+  text-align: center;
+}
+
+/* 액션 컨테이너 - 양쪽 끝 배치 */
+.actions-container {
+  padding: var(--spacing-md);
+  background: var(--bg-primary);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+/* 날짜 액션 버튼들 */
+.date-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.date-action-button {
+  padding: var(--spacing-xs) var(--spacing-md);
+  font-size: var(--font-size-small);
+  background-color: var(--bg-secondary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: var(--border-radius-full);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 400;
+}
+
+.date-action-button:hover {
+  background-color: var(--text-secondary);
+  color: var(--bg-primary);
+  transform: translateY(-1px);
+}
+
+.date-action-button.active {
+  background-color: var(--primary-color);
+  color: var(--bg-primary);
+  border-color: var(--primary-color);
+  font-weight: 500;
+}
+
+.date-action-button.active:hover {
+  background-color: var(--primary-dark);
+  border-color: var(--primary-dark);
+  transform: none;
+}
+
+/* TodoActions 스타일 */
+.todo-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
 .complete-all-button,
 .delete-all-button {
-  flex: 1;
-  padding: var(--spacing-sm) var(--spacing-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xs) var(--spacing-xs);
   font-size: var(--font-size-small);
   border: none;
   border-radius: var(--border-radius-sm);
   cursor: pointer;
   transition: all 0.3s ease;
   font-weight: 500;
+  min-width: 80px;
 }
 
 .complete-all-button {
-  background-color: var(--primary-color);
-  color: var(--bg-primary);
+  background-color: transparent;
+  color: var(--primary-color);
 }
 
 .complete-all-button:hover:not(:disabled) {
-  background-color: var(--primary-dark);
+  background-color: transparent;
+  color: var(--primary-dark);
 }
 
 .delete-all-button {
-  background-color: var(--danger-color);
-  color: var(--bg-primary);
+  background-color: transparent;
+  color: var(--danger-color);
 }
 
 .delete-all-button:hover:not(:disabled) {
-  background-color: var(--danger-hover);
+  background-color: transparent;
+  color: var(--danger-hover);
 }
 
 .complete-all-button:disabled,
@@ -288,6 +394,11 @@ h1 {
   overflow-y: auto;
   overflow-x: hidden;
   max-height: 100%;
+}
+
+.todo-list-container {
+  background: var(--bg-primary);
+  height: 100%;
 }
 
 /* 스크롤바 스타일링 */
@@ -354,11 +465,19 @@ h1 {
   cursor: pointer;
 }
 
+/* 할 일 컨텐츠 */
+.todo-content {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+}
+
 /* 할 일 제목 */
 .todo-title {
-  flex: 1;
   cursor: pointer;
-  padding: var(--spacing-xs) 0;
   font-size: var(--font-size-medium);
   transition: color 0.3s ease;
   user-select: none;
@@ -372,6 +491,13 @@ h1 {
   text-decoration: line-through;
   color: var(--text-completed);
   opacity: 0.7;
+}
+
+/* 할 일 날짜 */
+.todo-date {
+  font-size: var(--font-size-small);
+  color: var(--text-secondary);
+  font-weight: 400;
 }
 
 /* 편집 컨테이너 */
@@ -428,21 +554,16 @@ h1 {
 
 /* 삭제 버튼 */
 .delete-button {
-  padding: var(--spacing-sm) var(--spacing-md);
+  padding: var(--spacing-sm) 0;
   font-size: var(--font-size-small);
-  background-color: var(--danger-color);
-  color: var(--bg-primary);
+  background-color: transparent;
+  color: var(--border-light);
   border: none;
   border-radius: var(--border-radius-full);
   cursor: pointer;
   transition: all 0.3s ease;
   font-weight: 500;
-  margin-left: var(--spacing-sm);
-}
-
-.delete-button:hover {
-  background-color: var(--danger-hover);
-  transform: translateY(-1px);
+  margin-left: var(--spacing-md);
 }
 
 .delete-button:active {
@@ -471,12 +592,10 @@ h1 {
   }
 
   .todo-actions {
-    flex-direction: column;
-  }
-
-  .complete-all-button,
-  .delete-all-button {
-    margin-bottom: var(--spacing-sm);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
   }
 
   .delete-all-button {

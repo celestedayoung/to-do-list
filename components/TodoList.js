@@ -1,6 +1,15 @@
-function TodoList(container, todos, updateTodoCallback, deleteTodoCallback) {
+import { DateUtils } from "../utils/dateUtils.js";
+
+function TodoList(
+  container,
+  todos,
+  updateTodoCallback,
+  deleteTodoCallback,
+  allTodos = []
+) {
   this.container = container;
   this.todos = todos;
+  this.allTodos = allTodos; // 원본 전체 데이터
   this.updateTodoCallback = updateTodoCallback;
   this.deleteTodoCallback = deleteTodoCallback;
   this.editingIndex = null;
@@ -21,11 +30,25 @@ function TodoList(container, todos, updateTodoCallback, deleteTodoCallback) {
     }
 
     const todoListHTML = this.todos
-      .map((todo, index) => {
-        const isEditing = this.editingIndex === index;
+      .map((todo, displayIndex) => {
+        // 원본 데이터에서 실제 인덱스 찾기
+        const originalIndex = this.allTodos.findIndex(
+          (originalTodo) =>
+            originalTodo.name === todo.name &&
+            originalTodo.createdDate === todo.createdDate &&
+            originalTodo.isCompleted === todo.isCompleted
+        );
+        const isEditing = this.editingIndex === originalIndex;
 
         return `
         <div class="todo-item ${todo.isCompleted ? "completed" : ""}">
+          <input 
+            type="checkbox" 
+            class="todo-checkbox"
+            data-index="${originalIndex}"
+            ${todo.isCompleted ? "checked" : ""}
+            onchange="window.todoListInstance.toggleComplete(${originalIndex})"
+          />
           ${
             isEditing
               ? `
@@ -34,12 +57,12 @@ function TodoList(container, todos, updateTodoCallback, deleteTodoCallback) {
                 type="text" 
                 class="todo-edit-input" 
                 value="${todo.name}"
-                data-index="${index}"
-                onkeypress="window.todoListInstance.handleEditKeypress(event, ${index}, this.value)"
+                data-index="${originalIndex}"
+                onkeypress="window.todoListInstance.handleEditKeypress(event, ${originalIndex}, this.value)"
               />
               <button 
                 class="save-button"
-                onclick="window.todoListInstance.saveEdit(${index})"
+                onclick="window.todoListInstance.saveEdit(${originalIndex})"
               >
                 저장
               </button>
@@ -52,24 +75,26 @@ function TodoList(container, todos, updateTodoCallback, deleteTodoCallback) {
             </div>
           `
               : `
-            <input 
-              type="checkbox" 
-              class="todo-checkbox"
-              data-index="${index}"
-              ${todo.isCompleted ? "checked" : ""}
-              onchange="window.todoListInstance.toggleComplete(${index})"
-            />
-            <span 
-              class="todo-title ${todo.isCompleted ? "completed-text" : ""}" 
-              data-index="${index}"
-              onclick="window.todoListInstance.handleTitleClick(${index})"
-            >
-              ${todo.name}
-            </span>
+            <div class="todo-content">
+              <span 
+                class="todo-title ${todo.isCompleted ? "completed-text" : ""}" 
+                data-index="${originalIndex}"
+                onclick="window.todoListInstance.handleTitleClick(${originalIndex})"
+              >
+                ${todo.name}
+              </span>
+              ${
+                todo.createdDate
+                  ? `<span class="todo-date">${DateUtils.formatWithWeekday(
+                      todo.createdDate
+                    )}</span>`
+                  : ""
+              }
+            </div>
             <button 
               class="delete-button" 
-              data-index="${index}"
-              onclick="window.todoListInstance.deleteTodo(${index})"
+              data-index="${originalIndex}"
+              onclick="window.todoListInstance.deleteTodo(${originalIndex})"
             >
               X
             </button>
@@ -97,13 +122,13 @@ function TodoList(container, todos, updateTodoCallback, deleteTodoCallback) {
 
   this.toggleComplete = (index) => {
     this.updateTodoCallback(index, {
-      ...this.todos[index],
-      isCompleted: !this.todos[index].isCompleted,
+      ...this.allTodos[index],
+      isCompleted: !this.allTodos[index].isCompleted,
     });
   };
 
   this.handleTitleClick = (index) => {
-    const todo = this.todos[index];
+    const todo = this.allTodos[index];
     if (todo.isCompleted) {
       alert("완료된 할 일은 수정할 수 없습니다.");
       return;
@@ -133,9 +158,9 @@ function TodoList(container, todos, updateTodoCallback, deleteTodoCallback) {
       return;
     }
 
-    if (trimmedValue !== this.todos[index].name) {
+    if (trimmedValue !== this.allTodos[index].name) {
       this.updateTodoCallback(index, {
-        ...this.todos[index],
+        ...this.allTodos[index],
         name: trimmedValue,
       });
     }
@@ -150,15 +175,19 @@ function TodoList(container, todos, updateTodoCallback, deleteTodoCallback) {
   };
 
   this.deleteTodo = (index) => {
-    const todoToDelete = this.todos[index];
+    const todoToDelete = this.allTodos[index];
     if (confirm(`'${todoToDelete.name}'을(를) 삭제하시겠습니까?`)) {
       this.deleteTodoCallback(index);
     }
   };
 
-  this.update = (newTodos) => {
+  this.update = (newTodos, allTodos = []) => {
     this.todos = newTodos;
-    if (this.editingIndex !== null && this.editingIndex >= this.todos.length) {
+    this.allTodos = allTodos.length > 0 ? allTodos : newTodos;
+    if (
+      this.editingIndex !== null &&
+      this.editingIndex >= this.allTodos.length
+    ) {
       this.editingIndex = null;
     }
     this.render();

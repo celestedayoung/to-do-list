@@ -1,3 +1,5 @@
+import { DateUtils } from "../utils/dateUtils.js";
+
 function TodoInput(container, addTodoCallback) {
   this.container = container;
   this.addTodoCallback = addTodoCallback;
@@ -15,7 +17,7 @@ function TodoInput(container, addTodoCallback) {
         <input 
           type="text" 
           class="todo-input" 
-          placeholder="할 일을 입력하세요"
+          placeholder="오늘 할 일을 입력하세요"
           maxlength="100"
         />
         <button class="add-button">추가</button>
@@ -47,6 +49,7 @@ function TodoInput(container, addTodoCallback) {
     const newTodo = {
       name: todoText,
       isCompleted: false,
+      createdDate: DateUtils.getTodayString(),
     };
 
     this.addTodoCallback(newTodo);
