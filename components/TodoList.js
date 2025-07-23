@@ -80,11 +80,7 @@ function TodoList(container, todos, updateTodoCallback, deleteTodoCallback) {
       })
       .join("");
 
-    this.container.innerHTML = `
-      <div class="todo-list-container">
-        ${todoListHTML}
-      </div>
-    `;
+    this.container.innerHTML = todoListHTML;
 
     if (this.editingIndex !== null) {
       const editInput = this.container.querySelector(".todo-edit-input");
