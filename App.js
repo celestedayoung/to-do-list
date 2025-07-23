@@ -32,9 +32,13 @@ function App() {
    * @param {Array} newData - 새로운 할일 데이터
    */
   this.setState = (newData) => {
+    const oldData = [...this.data];
     this.data = newData;
     this.updateFilteredData();
     StorageUtil.saveTodos(this.data);
+
+    this.checkForCompletion(oldData, newData);
+
     this.todoList.update(this.filteredData, this.data);
     this.todoCounter.update(this.filteredData, this.currentDateFilter);
 
@@ -43,6 +47,30 @@ function App() {
     if (dateNavigationContainer)
       this.renderDateNavigation(dateNavigationContainer);
     if (todoActionsContainer) this.renderTodoActions(todoActionsContainer);
+  };
+
+  /**
+   * 할일 완료 시 축하 메시지 확인 및 표시
+   * @param {Array} oldData - 이전 할일 데이터
+   * @param {Array} newData - 새로운 할일 데이터
+   */
+  this.checkForCompletion = (oldData, newData) => {
+    if (this.currentDateFilter) {
+      const wasCompleted = DateUtils.isDateCompleted(
+        oldData,
+        this.currentDateFilter
+      );
+      const isNowCompleted = DateUtils.isDateCompleted(
+        newData,
+        this.currentDateFilter
+      );
+
+      if (!wasCompleted && isNowCompleted) {
+        setTimeout(() => {
+          alert(DateUtils.getCongratulationMessage(this.currentDateFilter));
+        }, 300);
+      }
+    }
   };
 
   /**

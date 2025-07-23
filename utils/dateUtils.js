@@ -158,4 +158,32 @@ export const DateUtils = {
     if (!dateString) return "전체";
     return this.formatToKorean(dateString);
   },
+
+  /**
+   * 특정 날짜의 모든 할일이 완료되었는지 확인
+   * @param {Array} todos - 전체 할일 목록
+   * @param {string} dateString - 확인할 날짜 (YYYY-MM-DD 형식)
+   * @returns {boolean} 해당 날짜의 모든 할일이 완료되었는지 여부
+   */
+  isDateCompleted(todos, dateString) {
+    const dateTodos = this.filterTodosByDate(todos, dateString);
+    return dateTodos.length > 0 && dateTodos.every((todo) => todo.isCompleted);
+  },
+
+  /**
+   * 날짜별 축하 메시지 생성
+   * @param {string} dateString - 완료된 날짜
+   * @returns {string} 축하 메시지
+   */
+  getCongratulationMessage(dateString) {
+    const category = this.getDateCategory(dateString);
+    const messages = [
+      `🎉 축하합니다! ${category}의 모든 할일을 완료했습니다!`,
+      `✨ 대단해요! ${category} 할일을 모두 끝내셨네요!`,
+      `🌟 훌륭합니다! ${category}의 목표를 달성했습니다!`,
+      `🏆 완벽해요! ${category} 계획을 모두 실행하셨습니다!`,
+    ];
+
+    return messages[Math.floor(Math.random() * messages.length)];
+  },
 };
