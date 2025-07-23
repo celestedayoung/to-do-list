@@ -461,8 +461,32 @@ h1 {
   width: 20px;
   height: 20px;
   margin-right: var(--spacing-sm);
-  accent-color: var(--primary-color);
   cursor: pointer;
+  appearance: none;
+  border: 2px solid var(--border-light);
+  border-radius: var(--border-radius-sm);
+  background-color: transparent;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.todo-checkbox:hover {
+  border-color: var(--primary-color);
+}
+
+.todo-checkbox:checked {
+  border-color: var(--primary-color);
+  background-color: transparent;
+}
+
+.todo-checkbox:checked::after {
+  content: "✓";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%) translateY(-1px);
+  color: var(--primary-color);
+  font-size: 19px;
+  font-weight: bold;
 }
 
 /* 할 일 컨텐츠 */
